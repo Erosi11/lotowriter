@@ -1,0 +1,11 @@
+# /etc/systemd/system/lotowriter-backup.service
+[Unit]
+Description=LotoWriter nightly backup
+
+[Service]
+Type=oneshot
+User=lotowriter
+Environment=LOTOWRITER_DATA=/var/lib/lotowriter
+# Change to your backup location (network share mounted on this PC, or a second disk):
+Environment=BACKUP_DEST=/mnt/backup/lotowriter
+ExecStart=/opt/lotowriter/deploy/backup.sh

@@ -1,0 +1,27 @@
+# /etc/systemd/system/lotowriter.service
+[Unit]
+Description=LotoWriter (EHS-003a procedure app)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=lotowriter
+Group=lotowriter
+WorkingDirectory=/opt/lotowriter
+Environment=LOTOWRITER_DATA=/var/lib/lotowriter
+# LibreOffice needs a writable home folder.
+Environment=HOME=/var/lib/lotowriter
+ExecStart=/opt/lotowriter/.venv/bin/python -m lotowriter serve --host 127.0.0.1 --port 8765
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the app can only write to its data folder.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/lotowriter
+
+[Install]
+WantedBy=multi-user.target

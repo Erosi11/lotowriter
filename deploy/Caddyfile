@@ -1,0 +1,21 @@
+# /etc/caddy/Caddyfile — HTTPS in front of LotoWriter.
+# HTTPS is required: phones only allow offline mode and reliable camera access on HTTPS pages.
+# Replace lotowriter.plant.local with the DNS name IT assigns to the Linux PC.
+
+lotowriter.plant.local {
+	# --- Choose ONE certificate option -------------------------------------------
+	# A) Certificate issued by company IT (recommended). Copy the files to /etc/caddy/certs/.
+	tls /etc/caddy/certs/lotowriter.crt /etc/caddy/certs/lotowriter.key
+
+	# B) Caddy's own internal CA. Then install Caddy's root certificate on every phone,
+	#    tablet and PC (see deploy/INSTALL.md, step 6B). Comment out A and uncomment:
+	# tls internal
+	# ------------------------------------------------------------------------------
+
+	encode gzip
+	request_body {
+		max_size 30MB
+	}
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy 127.0.0.1:8765
+}

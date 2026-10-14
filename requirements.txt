@@ -1,0 +1,11 @@
+python-docx>=1.2
+docxtpl>=0.20
+pillow>=12
+pillow-heif>=1.0           # iPhone HEIC photos
+fastapi>=0.143
+uvicorn[standard]>=0.54
+python-multipart>=0.0.32   # photo uploads
+# dev / tests
+pytest>=8
+httpx>=0.28                # FastAPI TestClient
+pymupdf>=1.28              # only for rendering PDFs to images during review

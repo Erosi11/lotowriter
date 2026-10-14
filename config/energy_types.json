@@ -1,0 +1,13 @@
+{
+  "_comment": "EHS-003a Energy Source Legend. fill/pattern/pattern_color are written to the Word cell shading exactly as the template legend does (w:shd val/color/fill).",
+  "types": [
+    {"code": "electrical", "name": "Electrical",        "fill": "FF0000", "pattern": "clear",          "pattern_color": "auto",   "text_color": "000000", "units": ["VAC", "VDC", "VAC 3-phase"], "also_covers": "Stored electrical: capacitors, VFD DC bus, batteries/UPS"},
+    {"code": "chemical",   "name": "Chemical",          "fill": "FFFF00", "pattern": "clear",          "pattern_color": "auto",   "text_color": "000000", "units": [], "also_covers": ""},
+    {"code": "mechanical", "name": "Mechanical",        "fill": "993366", "pattern": "clear",          "pattern_color": "auto",   "text_color": "000000", "units": ["lb", "RPM"], "also_covers": "Gravity / suspended loads, springs, rotating inertia"},
+    {"code": "pneumatic",  "name": "Pneumatic",         "fill": "008000", "pattern": "clear",          "pattern_color": "auto",   "text_color": "000000", "units": ["PSI"], "also_covers": ""},
+    {"code": "hydraulic",  "name": "Hydraulic",         "fill": "0000FF", "pattern": "clear",          "pattern_color": "auto",   "text_color": "FFFFFF", "units": ["PSI"], "also_covers": ""},
+    {"code": "steam",      "name": "Steam/Hot Water",   "fill": "0000FF", "pattern": "thinDiagStripe", "pattern_color": "FF0000", "text_color": "FFFFFF", "units": ["PSI", "°F"], "also_covers": ""},
+    {"code": "startstop",  "name": "Start/Stop Switch", "fill": "C0C0C0", "pattern": "diagCross",      "pattern_color": "FFFFFF", "text_color": "000000", "units": [], "also_covers": ""},
+    {"code": "thermal",    "name": "Thermal",           "fill": "FF6600", "pattern": "clear",          "pattern_color": "auto",   "text_color": "000000", "units": ["°F"], "also_covers": ""}
+  ]
+}

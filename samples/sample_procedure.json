@@ -1,0 +1,113 @@
+{
+  "_comment": "FICTIONAL sample data for layout testing only. Not a real procedure for any machine.",
+  "site": {"code": "02", "name": "Villa Rica"},
+  "department": {"code": "PROD", "name": "Production"},
+  "asset": {"number": "10045", "machine_type": "Die Cutter", "oem": "Example OEM", "model": "DC-100"},
+  "revision": 0,
+  "status": "draft",
+  "effective_date": "2026-11-01",
+  "review_date": null,
+  "document_owner": "Sample Owner",
+
+  "tasks_covered": ["Die change", "Blade cleaning", "Jam clearing inside guarding"],
+  "affected_employees": ["Die cutter operators", "Material handlers", "Production supervisors"],
+  "shutdown_procedure": "Normal stop per operator work instruction WI-PROD-0000 (sample reference).",
+  "lockout_devices": ["Breaker lockout", "Ball valve covers", "Gate valve cover", "Plug cover", "Group lockbox"],
+  "group_lockout": "Sample text: each authorized employee applies a personal lock to the group lockbox.",
+  "servicing_notes": "",
+  "restart_steps": [
+    "Sample step: confirm all tools removed and guards replaced",
+    "Sample step: remove safety blocks from platen",
+    "Sample step: open valves and close disconnects in reverse order of isolation",
+    "Sample step: start machine from operator station"
+  ],
+  "locks_required_override": null,
+  "locks_override_reason": "",
+
+  "points": [
+    {
+      "label": "E-1", "energy_type": "electrical", "magnitude": "480 VAC 3-phase",
+      "device": "Main disconnect, MCC-2 bucket 4, east wall behind machine (sample)",
+      "deenergize": "Sample text: turn disconnect handle to OFF",
+      "lock": "Apply lock and tag through disconnect handle hasp",
+      "stored_energy": "Sample text: wait 5 minutes for VFD DC bus to discharge",
+      "verify": "Sample text: qualified person tests for absence of voltage",
+      "locks": 1,
+      "photos": ["photos/main_disconnect.jpg"]
+    },
+    {
+      "label": "E-2", "energy_type": "electrical", "magnitude": "120 VAC (UPS)",
+      "device": "Control panel UPS breaker CB-3 (sample)",
+      "deenergize": "Sample text: switch CB-3 OFF",
+      "lock": "Breaker lockout device",
+      "verify": "Sample text: control screen dark, UPS indicator off",
+      "locks": 1,
+      "photos": ["photos/control_panel.jpg"]
+    },
+    {
+      "label": "P-1", "energy_type": "pneumatic", "magnitude": "95 PSI",
+      "device": "¼ turn valve located on the air/water/gas panel",
+      "deenergize": "Confirm PSI gauge is operational, then turn valve to EXH position to drain air from valve to end of line",
+      "lock": "Lock valve at EXH position",
+      "verify": "Monitor PSI gauge until 0 PSI is observed",
+      "locks": 1,
+      "photos": ["photos/pneumatic_valve_1.jpg", "photos/pneumatic_valve_2.jpg"]
+    },
+    {
+      "label": "H-1", "energy_type": "hydraulic", "magnitude": "2,000 PSI",
+      "device": "Hydraulic isolation valve HV-1 at power unit (sample)",
+      "deenergize": "Sample text: stop pump, close HV-1",
+      "lock": "Gate valve cover on HV-1",
+      "stored_energy": "Sample text: open accumulator bleed valve until gauge reads 0",
+      "verify": "Sample text: accumulator gauge at 0 PSI",
+      "locks": 1,
+      "photos": ["photos/hydraulic_valve.jpg"]
+    },
+    {
+      "label": "S-1", "energy_type": "steam", "magnitude": "180 °F / 30 PSI",
+      "device": "Steam supply ball valve SV-2 above machine (sample)",
+      "deenergize": "Sample text: close SV-2",
+      "lock": "Ball valve cover on SV-2",
+      "stored_energy": "Sample text: open drain valve downstream, allow to cool",
+      "verify": "Sample text: drain flow stopped, line cool to touch with gloves",
+      "locks": 1,
+      "photos": ["photos/steam_valve.jpg"]
+    },
+    {
+      "label": "M-1", "energy_type": "mechanical", "magnitude": "Gravity – raised platen, approx. 2,000 lb",
+      "device": "Upper platen (sample)",
+      "deenergize": "Sample text: lower platen fully before isolating hydraulics",
+      "lock": "Install two safety blocks; lock blocks with chain lock",
+      "verify": "Sample text: blocks seated on both sides",
+      "locks": 2,
+      "photos": ["photos/platen_blocks.jpg"]
+    },
+    {
+      "label": "T-1", "energy_type": "thermal", "magnitude": "350 °F die heaters",
+      "device": "Die heater breaker HB-1 in control panel (sample)",
+      "deenergize": "Sample text: switch HB-1 OFF",
+      "lock": "Breaker lockout device",
+      "stored_energy": "Sample text: allow die to cool below 110 °F",
+      "verify": "Sample text: check die temperature with IR thermometer",
+      "locks": 1,
+      "photos": ["photos/heater_breaker.jpg"]
+    },
+    {
+      "label": "C-1", "energy_type": "chemical", "magnitude": "Hot-melt adhesive supply",
+      "device": "Adhesive supply valve at glue unit (sample)",
+      "deenergize": "Sample text: close supply valve",
+      "lock": "Ball valve cover",
+      "verify": "Sample text: no flow at applicator when purge is attempted",
+      "locks": 1,
+      "photos": [],
+      "photo_missing_reason": "Sample: photo to be taken at next shutdown"
+    },
+    {
+      "label": "SS-1", "energy_type": "startstop", "magnitude": "Operator start station",
+      "device": "Main operator console (sample)",
+      "verify": "Sample text: press START to confirm machine does not run; return to OFF",
+      "locks": 0,
+      "photos": ["photos/start_button.jpg"]
+    }
+  ]
+}
