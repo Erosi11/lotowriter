@@ -1,4 +1,8 @@
 # /etc/systemd/system/lotowriter.service
+#
+# Closed-network setup: the app serves plain HTTP on port 80 directly to the private
+# Wi-Fi (no Caddy, no certificates). The Wi-Fi's WPA2/WPA3 password protects the traffic.
+# To switch to HTTPS later, see "Appendix: HTTPS" in deploy/INSTALL.md.
 [Unit]
 Description=LotoWriter (EHS-003a procedure app)
 After=network-online.target
@@ -10,11 +14,17 @@ User=lotowriter
 Group=lotowriter
 WorkingDirectory=/opt/lotowriter
 Environment=LOTOWRITER_DATA=/var/lib/lotowriter
+# Plain HTTP: the sign-in cookie must not be marked HTTPS-only.
+Environment=LOTOWRITER_SECURE_COOKIE=0
 # LibreOffice needs a writable home folder.
 Environment=HOME=/var/lib/lotowriter
-ExecStart=/opt/lotowriter/.venv/bin/python -m lotowriter serve --host 127.0.0.1 --port 8765
+ExecStart=/opt/lotowriter/.venv/bin/python -m lotowriter serve --host 0.0.0.0 --port 80
 Restart=on-failure
 RestartSec=5
+
+# Allow port 80 without running as root.
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
 
 # Hardening: the app can only write to its data folder.
 NoNewPrivileges=true

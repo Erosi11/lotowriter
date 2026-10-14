@@ -415,6 +415,7 @@ function checkoutBanner(rev) {
   if (c && c.mine) {
     return el("div", { class: "notice ok small" },
       el("strong", {}, "On this device: "), "works offline; changes upload automatically.",
+      window.isSecureContext ? null : el("div", {}, "Out of Wi-Fi range, keep this page open: closing the browser there means the app can't reopen until you're back in range (your changes stay saved on the phone)."),
       el("div", { class: "row", style: { marginTop: "8px" } },
         el("button", { class: "small", onclick: async () => {
           try { await data.release(rev.id); toast("Released"); route(); } catch (err) { showError($app, err); }

@@ -89,6 +89,8 @@ The legend is fixed at these **8 types**. Vacuum and gas aren't included. Each t
 
 ### 3.1 Self-hosting on the Linux PC
 
+> **Decided (Oct 2026):** the PC runs on its own private Wi-Fi with **no internet**, so the app is served over **plain HTTP on port 80** with no certificates (WPA2/WPA3 protects the network). Trade-off: the app can't *reopen* with no connection (it keeps working offline while the page stays open). The HTTPS notes below remain as the upgrade path. Current steps: `deploy/INSTALL.md`.
+
 - **Services:** run the app with systemd (or Docker Compose) behind **nginx** or **Caddy** as a reverse proxy. Install LibreOffice headless and the fonts used by the template (Calibri/Arial, or metric-compatible substitutes like Carlito/Liberation) so PDFs match Word's layout.
 - **HTTPS is required, not optional.** Browsers only allow offline mode (service workers) and dependable camera access on HTTPS pages. Plain `http://192.168.x.x` will break offline drafting. Options, best first:
   1. A certificate from company IT's internal certificate authority for a DNS name such as `lotowriter.plant.local`.

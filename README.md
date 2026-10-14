@@ -25,7 +25,8 @@ PDF output needs **LibreOffice** (`soffice`) on the Linux server. On a Windows d
 - First sign-in: user **admin**, password **Password1**. You must set a new password before anything else. **Do this immediately after installing**, before announcing the address.
 - Data (database, photos, generated documents) is stored in `./data`, or wherever `LOTOWRITER_DATA` points (e.g. `/var/lib/lotowriter`).
 - Lost the only admin password? On the server: `python -m lotowriter reset-admin` (resets to Password1, must change at sign-in).
-- Sign-in cookies are marked *Secure* (HTTPS only; browsers also accept them on `localhost`). To test from another device over plain HTTP on the LAN, set `LOTOWRITER_SECURE_COOKIE=0` and `--host 0.0.0.0`. Production must use HTTPS (see PROJECT_PLAN.md §3.1).
+- Sign-in cookies are marked *Secure* (HTTPS only; browsers also accept them on `localhost`) unless `LOTOWRITER_SECURE_COOKIE=0`.
+- **Production at Villa Rica: closed private Wi-Fi, plain HTTP on port 80, no certificates** (the service file sets `LOTOWRITER_SECURE_COOKIE=0`). See [deploy/INSTALL.md](deploy/INSTALL.md). HTTPS remains an option in the guide's appendix.
 
 ### Review & approval workflow
 
@@ -57,7 +58,7 @@ Draft ─► Ready for review ─► Printed for review ─► Approved ─► A
 - While checked out, other devices see who has it and can't edit it. The same person can **take it over** on another device, and an Admin can **release** anyone's. Changes that hadn't uploaded from the old device are then refused and listed on that device.
 - **Done editing – release** (or **Mark ready for review**) uploads and frees the procedure.
 - Checking, printing, copying and editing machine details need a connection.
-- Requires HTTPS (or `localhost`) — browsers only enable offline mode on secure pages.
+- On plain HTTP (the closed-Wi-Fi setup), keep the page open while out of range: edits still save on the device and upload later, but browsers only let the app *reopen* without a connection on HTTPS.
 
 ### Photo markup
 

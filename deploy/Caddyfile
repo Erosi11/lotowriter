@@ -1,5 +1,6 @@
-# /etc/caddy/Caddyfile — HTTPS in front of LotoWriter.
-# HTTPS is required: phones only allow offline mode and reliable camera access on HTTPS pages.
+# /etc/caddy/Caddyfile — OPTIONAL HTTPS in front of LotoWriter.
+# Not used in the closed-Wi-Fi setup (plain HTTP on port 80, see deploy/INSTALL.md).
+# Use it only if the network gets a trusted certificate: HTTPS lets the app reopen with no connection.
 # Replace lotowriter.plant.local with the DNS name IT assigns to the Linux PC.
 
 lotowriter.plant.local {
