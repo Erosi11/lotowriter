@@ -1,6 +1,6 @@
 # Installing LotoWriter on the Linux PC (closed Wi-Fi, no internet)
 
-Written for Ubuntu 24.04 LTS / Debian 12 on a PC that sits on its own private Wi-Fi network with **no internet**. The app is served over plain HTTP at the PC's IP address, so **there are no certificates and nothing to install on phones**. Run commands as a user with `sudo`. Text in `<angle brackets>` is yours to fill in.
+Written for Ubuntu 24.04 LTS / Debian 12, including ARM boards such as the Radxa Rock 5A (Radxa OS / Debian), on a PC that sits on its own private Wi-Fi network with **no internet**. The app is served over plain HTTP at the PC's IP address, so **there are no certificates and nothing to install on phones**. Run commands as a user with `sudo`. Text in `<angle brackets>` is yours to fill in.
 
 ## What plain HTTP means in practice
 
@@ -21,7 +21,14 @@ Written for Ubuntu 24.04 LTS / Debian 12 on a PC that sits on its own private Wi
 
 **If it can never be connected**, prepare the files on another computer with internet, and copy them over on a USB drive:
 
-1. Ubuntu packages: on an internet-connected Ubuntu 24.04 machine (or VM) run
+First check what the Linux PC runs, because the downloads must match it:
+```bash
+uname -m                 # x86_64 = regular PC, aarch64 = ARM board (e.g. Rock 5A)
+python3 --version        # e.g. 3.11 on Debian 12, 3.12 on Ubuntu 24.04
+cat /etc/os-release      # OS name and version
+```
+
+1. System packages: on an internet-connected machine running **the same OS version and architecture** (for an ARM board, a second board of the same kind is easiest) run
    ```bash
    mkdir debs && cd debs
    apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks \
@@ -29,10 +36,14 @@ Written for Ubuntu 24.04 LTS / Debian 12 on a PC that sits on its own private Wi
      fonts-crosextra-caladea fonts-liberation fonts-dejavu-core rsync | grep "^\w" | sort -u)
    ```
    On the Linux PC: `sudo apt install ./debs/*.deb`
-2. Python packages: on any computer with Python 3.12 run
+2. Python packages: on any computer with Python and internet, using the Python version from `python3 --version` (3.11 shown):
    ```bash
-   pip download -r requirements.txt -d wheels --platform manylinux2014_x86_64 --python-version 3.12 --only-binary=:all:
+   # Regular PC (x86_64):
+   pip download -r requirements.txt -d wheels --python-version 3.11 --only-binary=:all:      --platform manylinux_2_28_x86_64 --platform manylinux2014_x86_64
+   # ARM board (aarch64), e.g. Radxa Rock 5A:
+   pip download -r requirements.txt -d wheels --python-version 3.11 --only-binary=:all:      --platform manylinux_2_28_aarch64 --platform manylinux2014_aarch64
    ```
+   If pip reports a package with "no matching distribution", tell whoever maintains the app which one.
    On the Linux PC, in step 4 use: `sudo .venv/bin/pip install --no-index --find-links /path/to/wheels -r requirements.txt`
 3. The LotoWriter project folder itself (from GitHub, as a zip or `git clone`).
 
@@ -96,12 +107,33 @@ systemctl status lotowriter               # should say "active (running)"
 curl -s http://127.0.0.1/api/health       # {"ok":true}
 ```
 
-The service listens on **port 80** of every network interface. Firewall:
+The service listens on **port 80** of every network interface.
+
+### Firewall
+
+On a closed Wi-Fi used only for this app, a firewall is extra protection rather than a requirement (the only things listening are the app and SSH). If you skip it, make sure the SSH password is strong and the board's default password has been changed.
+
+> **Don't lock yourself out:** allow SSH from the address or subnet you actually connect from *before* turning the firewall on.
+
+**If `ufw` is available** (Ubuntu; or `sudo apt install ufw` while online):
 ```bash
 sudo ufw allow 80/tcp
-sudo ufw allow from <admin PC IP> to any port 22 proto tcp     # optional, for remote admin
+sudo ufw allow from <admin subnet, e.g. 192.168.2.0/24> to any port 22 proto tcp
 sudo ufw enable
 ```
+
+**If `ufw` isn't installed and there's no internet** (e.g. Radxa OS / Debian): use nftables, which is built in (`sudo nft --version` to check).
+1. Edit `deploy/nftables.conf`: change `192.168.2.0/24` to the subnet you SSH from.
+2. Install and test it **without** making it permanent:
+   ```bash
+   sudo cp deploy/nftables.conf /etc/nftables.conf
+   sudo nft -c -f /etc/nftables.conf && sudo nft -f /etc/nftables.conf
+   ```
+3. Open a **new** SSH session and load `http://<PC IP>` from a phone. If both work, make it permanent:
+   ```bash
+   sudo systemctl enable nftables
+   ```
+   If SSH stopped working, reboot the PC: the rules aren't permanent until this last step.
 
 ## 8. First sign-in (do this immediately)
 
@@ -152,7 +184,8 @@ or copy the new project folder in from USB (keep `.venv`). Then `sudo systemctl 
 | Problem | Check |
 |---|---|
 | Sign-in seems to do nothing | The service file must contain `LOTOWRITER_SECURE_COOKIE=0` (plain HTTP). `systemctl cat lotowriter` |
-| Page doesn't load on a phone | Phone is on the private Wi-Fi? `http://` not `https://`? Same IP as `hostname -I` on the PC? Firewall allows port 80? |
+| Page doesn't load on a phone | Phone is on the private Wi-Fi? `http://` not `https://`? Same IP as `hostname -I` on the PC? Firewall allows port 80 (`sudo nft list ruleset` or `sudo ufw status`)? |
+| `ufw: command not found` | Not installed on Debian/Radxa OS: use the nftables option in step 7 (or `sudo apt install ufw` while online) |
 | Lost the only admin password | `sudo -u lotowriter env LOTOWRITER_DATA=/var/lib/lotowriter /opt/lotowriter/.venv/bin/python -m lotowriter reset-admin`, then sign in with Password1 and change it |
 | PDFs aren't created (Word file only) | `journalctl -u lotowriter -n 50`; check that `soffice --version` works |
 | Dates look wrong (review due, approvals) | The PC clock: step 5 |
@@ -163,4 +196,4 @@ or copy the new project folder in from USB (keep `.venv`). Then `sudo systemctl 
 HTTPS lets the app reopen with no connection at all. It needs a certificate that phones trust, either from IT or from Let's Encrypt using a domain you own (the PC needs brief internet access every 60 days to renew). Then:
 1. `sudo apt install caddy`, edit and copy `deploy/Caddyfile` to `/etc/caddy/Caddyfile`, `sudo systemctl reload caddy`.
 2. In `/etc/systemd/system/lotowriter.service`: remove `LOTOWRITER_SECURE_COOKIE=0`, change the ExecStart to `--host 127.0.0.1 --port 8765`, and remove the two `CAP_NET_BIND_SERVICE` lines. Then `sudo systemctl daemon-reload && sudo systemctl restart lotowriter`.
-3. Firewall: allow 443 and 80.
+3. Firewall: allow 443 and 80 (with nftables, add `tcp dport 443 accept` to `/etc/nftables.conf`).

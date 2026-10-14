@@ -2,3 +2,4 @@
 *.service text eol=lf
 *.timer text eol=lf
 Caddyfile text eol=lf
+nftables.conf text eol=lf
